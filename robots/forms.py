@@ -8,14 +8,12 @@ class RobotForm(forms.ModelForm):
         model = Robot
         fields = ['serial', 'model', 'version', 'created']
 
-    def clean(self):
-        cleaned_data = super().clean()
-        serial = cleaned_data.get('serial')
-        model = cleaned_data.get('model')
-        version = cleaned_data.get('version')
+    def save(self, commit=True):
+        # Генерируем серийный номер из модели и версии, разделенных тире
+        instance = super(RobotForm, self).save(commit=False)
+        instance.serial = f"{self.cleaned_data['model']}-{self.cleaned_data['version']}"
 
-        if serial and (not serial.startswith(model) or not serial.endswith(version)):
-            raise forms.ValidationError("Serial should start with the model and end with the version")
-
-        return cleaned_data
+        if commit:
+            instance.save()
+        return instance
 
