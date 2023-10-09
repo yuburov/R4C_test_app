@@ -1,5 +1,6 @@
 venv
 virtualenv
+.env
 .idea
 .vscode
 .DS_Store
